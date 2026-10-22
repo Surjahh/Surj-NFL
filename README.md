@@ -107,3 +107,34 @@ Important limitation: this is a market-anchored baseline, not an independent tea
 ## v12 visual theme update
 
 This package updates the SURJ INTEL interface to a black-and-red theme with electric-blue accents across navigation, moneyline cards, player-prop tables, inputs, buttons, badges, charts, and responsive layouts. Existing Netlify functions and environment-variable names are preserved.
+
+
+## v13: sportsbook odds and player-prop CSV import
+The new **Import CSV** panel accepts moneyline CSVs or player-prop line CSVs. CSV contents are processed in the browser only; no file is uploaded to Netlify.
+
+### Moneyline CSV format
+Required headers: `home_team`, `away_team`, `home_odds`, `away_odds`. Optional: `bookmaker` (or `book` / `sportsbook`) and `commence_time` (or `start_time`, `game_time`, `date`, `kickoff`). Each row represents one game at one book. Odds should be American (for example `-125` or `+110`). Include the book column if you have multiple books so the app can compare prices.
+
+### Player props CSV format
+Required headers: `player`, `market`, `line`, and either both `over_odds` / `under_odds` columns or `side` / `odds` columns with one row per side. Optional: `matchup`, `bookmaker` (or `book` / `sportsbook`), `updated_at`. Supported common markets include passing yards, pass TDs, completions, rushing yards, rush TDs, receiving yards, receptions, receiving TDs, rush + receiving yards, anytime TD, longest reception, and interceptions. Unknown market labels still display in Live Props but may not be supported by Best Props Finder. American odds are recommended. The importer also recognizes a `format` or `odds_format` value of `decimal` for decimal prices.
+
+### Example templates
+- `templates/sportsbook-moneyline-template.csv`
+- `templates/player-props-template.csv`
+
+CSV-imported moneylines feed Game Center and Moneyline Intelligence and are merged with live API games when matchup/date matches. CSV-imported player lines appear in Live NFL player props and can be copied into Research; they also feed Best Props Finder when the market maps to imported historical player stats. Imported data is held in page memory for the current tab and is not persisted after reload. Re-import a file after refreshing. This import does not create a live feed or verify whether the lines are current.
+
+
+## v14: Compact dashboard layout
+- Keeps the black/red identity with electric-blue data accents.
+- Uses a sticky horizontal navigation bar and compact spacing across summary cards, forms, tables, and game tiles.
+- Moves Best Props Finder and Moneyline Intelligence near the top so ranked opportunities are seen sooner.
+- Adds accessible Collapse/Expand controls to dashboard cards. Secondary tools start collapsed to reduce initial page length; clicking navigation expands the destination section.
+- Retains all existing DOM IDs, CSV templates/import behavior, player-prop tools, moneyline analysis, and Netlify functions/environment variable names.
+
+### Deploy v14
+1. Extract the ZIP.
+2. Replace matching files in the GitHub repository connected to the existing Netlify site, preserving `netlify/functions/` and `templates/`.
+3. Commit and wait for Netlify's deploy to complete.
+4. Keep existing `ODDS_API_KEY`, `PROP_LINE_API_KEY`, and `GRIDIRON_DATA_API_KEY` environment variables in Netlify. Do not put keys in source files.
+5. Test the sticky navigation, collapse controls, CSV templates/import, moneyline refresh, player-prop refresh, and Best Props Finder. Live data still depends on provider access and valid keys.
