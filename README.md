@@ -140,21 +140,12 @@ CSV-imported moneylines feed Game Center and Moneyline Intelligence and are merg
 5. Test the sticky navigation, collapse controls, CSV templates/import, moneyline refresh, player-prop refresh, and Best Props Finder. Live data still depends on provider access and valid keys.
 
 
-## v15: shared persistent CSV uploads (Netlify Blobs)
-This version adds shared storage for the sportsbook CSV importer. When a visitor opens the site, the dashboard reads the published moneyline and player-prop CSVs from `/.netlify/functions/shared-csv`. Anyone can read the published files, so all visitors see the same saved data. Publishing a new file replaces only that category and preserves the other category. The files are stored in Netlify Blobs, not in an individual visitor's browser, so they survive refreshes and site redeploys.
+## v15: shared storage (superseded by v16)
+The v15 release briefly allowed shared sportsbook-line CSV uploads. In v16, that behavior is removed. The shared endpoint now stores only historical player statistics and optional snap counts, and clears the legacy v15 sportsbook CSV record when the endpoint is accessed. Follow the v16 workflow below.
 
-### One-time setup
-1. Deploy the complete package to the Netlify site connected to your GitHub repository. Keep `package.json`, `netlify.toml`, and the entire `netlify/functions/` folder. Netlify installs `@netlify/blobs` from `package.json`.
-2. In Netlify, open **Site configuration → Environment variables** and add `SURJ_CSV_UPLOAD_TOKEN`. Use a long, random secret (at least 32 characters). Do not put it in `index.html`, GitHub, or a public message. Keep existing `ODDS_API_KEY`, `PROP_LINE_API_KEY`, and `GRIDIRON_DATA_API_KEY` variables unchanged.
-3. Trigger a fresh deploy so the function receives the variable and the Blobs dependency is installed.
-4. Open the public website, go to **Import CSV**, select a moneyline or player-props CSV, and wait for the import to validate.
-5. Enter the same `SURJ_CSV_UPLOAD_TOKEN` in the **Admin upload token** field, then click **Publish imported CSV to everyone**. The token field is cleared after publishing.
-6. Open the site in another browser or private window. The shared CSV should load automatically. Use **Reload shared data** to fetch it again.
-
-### Security and behavior
-- The GET endpoint is public by design because all visitors should see the published lines. Only POST uploads require the secret token.
-- Anyone who obtains the upload token could replace the shared CSV, so keep it private and rotate it in Netlify if exposed. Never commit it to GitHub.
-- Maximum CSV upload size is 5 MB. CSVs need a header and at least one data row and must match the existing moneyline or player-prop importer format.
-- Publishing a moneyline CSV preserves the published player-props CSV, and vice versa. It replaces the previous CSV of the same category, rather than appending duplicate rows.
-- Netlify Blobs requires deployment in Netlify. The shared store is not expected to work when opening `index.html` directly from your computer.
-- This stores manually uploaded sportsbook lines; it does not refresh their prices automatically or verify that they are current.
+## v16: persist player statistics, not sportsbook lines
+- Shared Netlify Blobs storage is now reserved only for `player_stats.csv` and optional `snap_counts.csv`. The shared endpoint rejects moneyline and sportsbook player-prop CSV upload kinds.
+- In the Historical Player Statistics panel, import `player_stats.csv`, enter the private `SURJ_CSV_UPLOAD_TOKEN` value, then click **Publish player stats**. Optionally import and publish `snap_counts.csv` too.
+- Published historical stats are loaded automatically for every visitor. Publishing one dataset preserves the other. The upload token is never embedded in website source.
+- The sportsbook CSV importer remains local to the current browser session and does not save lines to shared storage. Existing live odds and player-prop API functions remain in place.
+- Deploy by replacing the website files in the connected GitHub repository and committing the changes. In Netlify, keep `SURJ_CSV_UPLOAD_TOKEN` plus any existing API environment variables, then trigger a fresh deploy.

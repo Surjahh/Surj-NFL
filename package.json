@@ -1,9 +1,11 @@
 {
   "name": "surj-intel",
   "private": true,
-  "version": "15.0.0",
-  "description": "SURJ INTEL NFL research dashboard with shared persistent CSV uploads",
-  "engines": { "node": ">=18" },
+  "version": "16.0.0",
+  "description": "SURJ INTEL NFL research dashboard with shared persistent player-stat CSV uploads",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@netlify/blobs": "^8.1.0"
   }
