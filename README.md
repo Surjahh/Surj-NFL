@@ -1,4 +1,14 @@
-# Gridiron Edge Live Starter
+# SURJ INTEL v10: NFL Control Center
+
+This release refreshes the dashboard with a premium navy-and-white sports broadcast look while preserving the existing projection, live game odds, live player props, Best Props Finder, CSV imports, snap-share controls, historical backtest, injury/context lookup, team-defense adjustment, export, and local prop board.
+
+## Visual redesign
+- Navy masthead, bold all-caps sports typography, white analytics panels, blue accent rules, and gold highlight accents.
+- Dashboard navigation for Game Center, Live Props, Best Props, Player Stats, Research Board, and Matchup Tools.
+- Game odds render as responsive matchup strips with team-abbreviation monogram badges. These are text marks, not copied official team logos. Use official logo assets only when you have permission or a suitable license.
+- Responsive tables and controls for mobile and desktop.
+
+# SURJ INTEL Live Starter
 
 Mobile-friendly NFL research dashboard with:
 - A Netlify serverless function for The Odds API game lines, plus a PropLine player-props function using a server-side secret.
@@ -10,10 +20,10 @@ Mobile-friendly NFL research dashboard with:
 The included `live-props.mjs` function uses PropLine's API, whose published pricing page advertises a free tier with 1,000 requests/day and 60+ player prop markets. NFL coverage varies by bookmaker and market, and its docs note that major US sportsbook NFL props may be seasonal/not available on every book. Create a free key at https://prop-line.com/ and set `PROP_LINE_API_KEY` in Netlify environment variables. Test that your requested NFL props actually return before relying on the feed. No subscription is required to test the free tier. The app also retains manual prop entry as a fallback.
 
 ## Easiest deployment (phone-accessible website)
-1. Create a free account at https://github.com/ and create a new repository named `gridiron-edge`.
+1. Create a free account at https://github.com/ and create a new repository named `surj-intel`.
 2. Upload the contents of this folder to the repository (not the ZIP file itself).
 3. Create a free account at https://www.netlify.com/ and choose **Add new site → Import an existing project**.
-4. Connect GitHub and select `gridiron-edge`. Netlify should detect `netlify.toml`. Deploy.
+4. Connect GitHub and select `surj-intel`. Netlify should detect `netlify.toml`. Deploy.
 5. Sign up for The Odds API at https://the-odds-api.com/ and copy the API key.
 6. In Netlify, open **Site configuration → Environment variables** and add `PROP_LINE_API_KEY` with your private PropLine key. You may also keep `ODDS_API_KEY` if you want the game-moneyline function to work.
 7. Trigger a redeploy. Open your Netlify site URL on your phone and tap **Refresh live props**. The game odds button uses the separate `ODDS_API_KEY` and remains independent.
