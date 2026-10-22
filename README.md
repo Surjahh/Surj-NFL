@@ -102,3 +102,8 @@ The finder only produces a candidate when it can match the player, map the marke
 The Moneyline Intelligence panel reuses the existing `/.netlify/functions/nfl-odds` feed and `ODDS_API_KEY` setting. It analyzes every game returned by the odds provider, removes each book's vig from the two moneyline prices, averages those no-vig probabilities as a market-anchored baseline, converts the baseline into fair American odds, and compares the baseline with the best listed price for each team. It ranks price discrepancies, supports all-games/value-only/upset-watch filters, and shows a confidence indicator based on number of books and price agreement.
 
 Important limitation: this is a market-anchored baseline, not an independent team-strength model. The price edge is a market-consensus-versus-best-book discrepancy, not a validated predictive advantage. The upset watch flags underdogs with at least a 35% baseline win probability; it does not mean the underdog is a good wager. Odds availability varies by provider and book. Test live responses after deploying, and do not interpret confidence labels as certainty or guaranteed profit. No additional API key is required.
+
+
+## v12 visual theme update
+
+This package updates the SURJ INTEL interface to a black-and-red theme with electric-blue accents across navigation, moneyline cards, player-prop tables, inputs, buttons, badges, charts, and responsive layouts. Existing Netlify functions and environment-variable names are preserved.

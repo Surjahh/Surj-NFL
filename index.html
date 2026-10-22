@@ -36,6 +36,43 @@ body:before{content:"";display:block;height:6px;background:linear-gradient(90deg
 /* Moneyline Intelligence */
 .ml-stats{grid-template-columns:repeat(4,minmax(0,1fr));margin:0 0 14px}.ml-stats .stat{background:#f6f9fd;border-color:#dbe5f1;border-radius:6px}.ml-stats .value{color:#0b2a53}.ml-value{font-weight:900}.ml-bar{height:6px;background:#e4ebf4;border-radius:99px;overflow:hidden;min-width:90px;margin-top:5px}.ml-bar span{display:block;height:100%;background:#1767b8}.ml-signal{display:inline-block;padding:4px 7px;border-radius:4px;background:#e6f5ee;color:#087e5a;font-size:10px;font-weight:900}.ml-signal.watch{background:#fff3d8;color:#8a5a00}.ml-signal.neutral{background:#edf2f8;color:#52647c}.ml-prob{font-weight:900;color:#0b2a53}.ml-sub{font-size:10px;color:#64748b;margin-top:3px}@media(max-width:720px){.ml-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+/* SURJ INTEL v12: Black + Red with Electric Blue accents */
+:root{--bg:#090a0d;--panel:#121419;--panel2:#191c23;--line:#30343e;--muted:#a0a8b8;--text:#f5f7fb;--green:#42d6a0;--amber:#ffbd59;--red:#ff454f;--blue:#28a5ff;--purple:#b9a2ff;color-scheme:dark}
+body{background:radial-gradient(ellipse at 18% -12%,#252b36 0,transparent 42%),var(--bg)!important;color:var(--text)!important}
+body:before{background:linear-gradient(90deg,#ff303b 0 43%,#28a5ff 43% 76%,#101216 76% 100%)}
+.top{background:#08090c!important;color:#fff;border-bottom:4px solid var(--red)!important}
+.logo{background:linear-gradient(135deg,#ff4a54,#c90d24)!important;color:#fff!important;box-shadow:inset 0 -3px 0 #8d0b1b}
+.brand h1 span{color:var(--red)!important}.brand small{color:#9da9bc!important}
+.chip,.top .chip{background:#151820!important;border-color:#383d49!important;color:#e1e8f4!important}
+.hero{background:linear-gradient(120deg,#15171d,#101217)!important;border-color:#30343e!important;border-left-color:var(--red)!important;box-shadow:0 8px 24px rgba(0,0,0,.24)!important}
+.hero h2{color:#fff!important}.hero p:not(.eyebrow){color:#b2bac9!important}.eyebrow{color:var(--blue)!important}
+a,.source-list a{color:var(--blue)!important}
+.btn{background:#1b1e26!important;color:#f5f7fb!important;border-color:#3a404d!important}
+.btn:hover{background:#252a35!important;border-color:var(--blue)!important}
+.btn.primary{background:var(--red)!important;border-color:var(--red)!important;color:#fff!important;box-shadow:0 3px 0 #a70d1d!important}
+.btn.primary:hover{background:#e52b38!important}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--blue)!important;outline-offset:2px}
+.notice{background:#20161a!important;border-color:#6d2631!important;border-left-color:var(--red)!important;color:#f2dce0!important}.notice b{color:#ff6873!important}
+.stat,.card{background:#121419!important;border-color:#30343e!important;box-shadow:0 5px 18px rgba(0,0,0,.18)!important}
+.stat{border-top-color:var(--red)!important}.stat label,.sub,.head p,.small,.muted{color:var(--muted)!important}.value{color:#fff!important}
+.head{background:#191c23!important;border-bottom-color:#30343e!important}.head h3{color:#f7f8fb!important}
+.table th{background:#20232b!important;color:#c2ccdc!important;border-bottom-color:#3b404b!important}
+.table td{background:#121419;color:#e0e7f1!important;border-bottom-color:#292d36!important}.table td b{color:#fff!important}.table tbody tr:nth-child(even){background:#171a20!important}.table tbody tr:nth-child(even) td{background:#171a20!important}.table tbody tr:hover,.table tbody tr:hover td{background:#1b2735!important}
+.tag{background:#29212a!important;color:#ff8a92!important;border-color:#63303a!important}
+.positive{color:#42d6a0!important}.negative{color:#ff6873!important}
+.field label{color:#b8c2d2!important}.field input,.field select,.field textarea{background:#0d0f14!important;border-color:#3a404d!important;color:#f5f7fb!important}.field input::placeholder,.field textarea::placeholder{color:#7e899d!important}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue)!important;box-shadow:0 0 0 3px rgba(40,165,255,.16)!important}
+.metric,.game{border-bottom-color:#292d36!important}.metric span{color:#a0a8b8!important}.metric b{color:#f5f7fb!important}
+.game{background:linear-gradient(180deg,#171a20,#111318)!important;border-color:#30343e!important;border-top-color:var(--red)!important;box-shadow:0 4px 12px rgba(0,0,0,.2)!important}.gametop{color:#a0a8b8!important}.teams{color:#f5f7fb!important}.team-mark{background:#b91527!important;border-color:#424854!important;color:#fff!important}.team-mark.home{background:#087bc7!important}
+.oddsline span{background:#191d25!important;border-color:#353b47!important;color:#d6e0ee!important}
+.empty{color:#9ca8bb!important}.foot{border-top-color:#30343e!important;color:#8995a8!important}
+.pill{background:#171a21!important;border-color:#3a404d!important;color:#c4cddd!important}.pill.active{background:#182d40!important;border-color:#176aa2!important;color:#70c7ff!important}
+.control-nav{border-bottom-color:#30343e!important}.control-nav a{background:#15171d!important;border-color:#343945!important;color:#dce4f0!important}.control-nav a:hover{background:var(--red)!important;border-color:var(--red)!important;color:#fff!important}
+.score-ribbon{background:linear-gradient(100deg,#a90f21,#161920 72%)!important;border:1px solid #6c2631!important;color:#fff!important}.score-ribbon .live-dot{background:var(--blue)!important;box-shadow:0 0 0 4px rgba(40,165,255,.18)!important}.score-ribbon span:last-child{color:#d2dbea!important}
+#bestPropsCard{border-top-color:var(--red)!important}#bestPropsCard .head{background:#21171b!important}#bestPropsCard .head h3:before{color:var(--red)!important}.source-list p{border-bottom-color:#292d36!important}
+.ml-stats .stat{background:#151820!important;border-color:#30343e!important}.ml-stats .value,.ml-prob{color:var(--blue)!important}.ml-bar{background:#303540!important}.ml-bar span{background:linear-gradient(90deg,var(--red),var(--blue))!important}.ml-signal{background:#182d27!important;color:#62e0ad!important}.ml-signal.watch{background:#33271a!important;color:#ffca72!important}.ml-signal.neutral{background:#202630!important;color:#c3cede!important}.ml-sub{color:#a0a8b8!important}
+@media(max-width:580px){.top{background:#08090c!important}.hero{background:#14161c!important}.control-nav a{background:#15171d!important}}
+
 </style>
 </head>
 <body><main class="app">
@@ -68,7 +105,7 @@ body:before{content:"";display:block;height:6px;background:linear-gradient(90deg
 <section class="card"><div class="head"><div><h3>Data plan under $25/month</h3><p>Build in layers to avoid paying for the wrong feed.</p></div></div><div class="body"><div class="metric"><span>NFL stats</span><b class="positive">Free historical data</b></div><div class="metric"><span>Game odds</span><b>Free-tier API key</b></div><div class="metric"><span>Player props</span><b class="warn">Likely manual at this budget</b></div><div class="metric"><span>Hosting</span><b class="positive">Free static hosting tier</b></div><p class="small">Provider market access and pricing change. Confirm that player props are included before subscribing. The API key must stay in server-side environment variables.</p></div></section>
 <section class="card"><div class="head"><div><h3>Sources & setup</h3></div></div><div class="body source-list"><p><a href="https://the-odds-api.com/sports/nfl-odds.html" target="_blank" rel="noreferrer">The Odds API: NFL markets ↗</a><span class="small">Current game odds and documented event markets.</span></p><p><a href="https://nflreadr.nflverse.com/" target="_blank" rel="noreferrer">nflverse / nflreadr ↗</a><span class="small">Free historical play-by-play and player statistics.</span></p><p><a href="https://app.netlify.com/" target="_blank" rel="noreferrer">Netlify hosting ↗</a><span class="small">Host the site and run the small server function.</span></p><p class="small">Once deployed, set environment variable <code>ODDS_API_KEY</code> in your hosting dashboard, then redeploy.</p></div></section>
 </aside></div>
-<footer class="foot">SURJ INTEL Control Center v10 · Research only · No betting transactions · Odds may be delayed or unavailable. Keep a record of model assumptions and evaluate performance over a meaningful sample.</footer>
+<footer class="foot">SURJ INTEL Control Center v12 · Research only · No betting transactions · Odds may be delayed or unavailable. Keep a record of model assumptions and evaluate performance over a meaningful sample.</footer>
 </main>
 <script>
 const $=id=>document.getElementById(id);
