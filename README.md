@@ -24,15 +24,49 @@ Never put the key in `index.html`, commit it to GitHub, or send it in a chat. On
 ## Local preview
 Open `index.html` directly for manual prop entry and calculations. The live-odds button will not work locally because it calls a Netlify function. To test the whole app locally, install Netlify CLI and run `netlify dev`.
 
-## Current limitations / next upgrades
-- Live game odds only; no automated player props, injury reports, or current player stats are connected yet.
-- Player props are manual inputs. Historical player stats can be integrated next from nflverse public data.
-- Probability estimates use a simple normal approximation for most yardage markets. This is not a validated betting model; touchdown probability is intentionally shown as N/A.
+## Current limitations
+- The provider-reported injury lookup and historical matchup context are available in v7 when GRIDIRON_DATA_API_KEY is configured. Official game-day inactives, pure team defensive rankings, and weather are not guaranteed to be automatic. Snap shares can be imported from a compatible nflverse snap-count CSV.
+- Player props can be loaded from the included PropLine function when the API returns coverage, or entered manually.
+- Projection probabilities are estimates from simple distribution assumptions, not a validated betting system.
 - This app does not place bets.
 
-
 ## Free historical NFL statistics
-The nflverse project publishes free historical/player data and updates player stats nightly after game days. See https://nflreadr.nflverse.com/ and https://nflreadr.nflverse.com/articles/nflverse_data_schedule.html. The current dashboard still requires manual projections; historical-stat-driven projections are the next development step.
+The nflverse project publishes free historical/player data and updates player stats nightly after game days. See https://nflreadr.nflverse.com/ and https://nflreadr.nflverse.com/articles/nflverse_data_schedule.html. The dashboard includes a historical-stat-driven baseline projection, recent usage adjustment, rolling backtest, and the v7 context lookup described below.
 
 ## Historical statistics import
 Open the dashboard, click the nflverse releases link in the Historical NFL Stats panel, download the Player Summary Stats `player_stats.csv` asset, then use **Import player_stats.csv**. The browser processes the file locally. The current importer filters the 2026 season and shows recent per-player results for supported columns; it is a descriptive lookup, not yet a calibrated forecast model.
+
+
+## Projection engine (v5)
+Import the weekly 2026 nflverse Player Summary Stats CSV in the Historical Stats panel. In the prop board, enter or select the player, choose a supported market, optionally enter opponent/role/availability/environment percentage adjustments, and click **Build projection from imported stats**. The engine combines season average, last-four-game average, and an exponentially recency-weighted average; shrinks small samples toward the season mean; estimates standard deviation from recent and season-wide variation; and records its assumptions in the evidence notes. It supports yards, receptions, completions, TD counts, rush + receiving yards, and anytime TD baseline estimates.
+
+The Historical Stats panel includes a rolling backtest. It forecasts each later game using only that player's earlier games and reports MAE, RMSE, and bias. This is a useful sanity check, not independent proof of predictive performance: samples may be small, and the current model does not automatically incorporate injuries, snap share, opponent defense, weather, or sportsbook consensus.
+
+## Projection engine (v5 upgrade)
+- Uses a weighted blend of season average, last-four-game average, and an exponentially recency-weighted average.
+- Shrinks the blended estimate toward the season average when the sample is small, reducing overreaction to a few games.
+- Estimates uncertainty from the last eight games and season-wide variance.
+- Adds optional manual percentage adjustments for opponent, player role/usage, availability, and game environment. These are user-entered assumptions, not automatically sourced injury/weather/defensive data.
+- Supports passing/rushing/receiving yards, receptions, completions, pass/rush/receiving TD counts, rush + receiving yards, and anytime TD baseline. Yardage/volume probabilities use a normal approximation; TD counts use a Poisson approximation.
+- Player names are suggested from the imported CSV. The data is processed locally in the browser.
+
+Important: the model is a transparent starting point, not a trained or backtested betting system. Don't treat its probability gaps as proven value. Before using it for real decisions, test projections against held-out weeks, compare calibration to actual outcomes, and incorporate player participation/snaps, opponent-adjusted usage, injuries, and sportsbook market consensus.
+
+
+## Projection engine (v6 usage upgrade)
+- In addition to the player summary CSV, click **Import snap_counts.csv** and import the nflverse weekly snap-count CSV for the 2026 season. The importer looks for player, week, and offensive snap percentage columns (commonly `player`, `week`, and `offense_pct`).
+- When a player name matches across files, the projection estimates recent offensive snap-share change (last four games versus season average) and adds a bounded, visible usage adjustment to the manual role adjustment. It reports the snap-share inputs in the evidence notes. This is a heuristic, not a causal estimate of how many yards each snap creates.
+- The **Player availability** selector offers explicit default reductions for questionable, limited, doubtful, and out statuses. These are conservative editable assumptions, not an official injury feed. Confirm official reports; selecting OUT blocks a normal projection.
+- Historical player stats and snap-count files are processed locally in the browser and are not uploaded. The dashboard still does not automatically fetch injury reports, weather, or opponent defensive metrics.
+
+## v7: automatic injury and opponent context
+This version adds a Netlify function `netlify/functions/gridiron-context.mjs` that calls GridIron Data's player profile endpoint server-side. Add `GRIDIRON_DATA_API_KEY` under Netlify environment variables; never put the key in `index.html` or commit it to GitHub. Get a key at https://www.gridirondata.com/pages/docs.html. The provider currently advertises a free tier with 50 requests/month for player lookups and current-week projections. Its $5/month Basic tier adds broader stats, snaps, matchup endpoints; the $29/month Pro tier is required for its dedicated game-day injury-changes feed. This keeps the initial integration under the stated $25/month budget, but does not provide continuous game-day injury-change alerts.
+
+Use **Automatic injury & matchup context** to look up a player's reported injury status and provider matchup history. The injury result is provider-reported, may not reflect the latest official inactive announcement, and must be verified before kickoff. Use **Apply reported availability** to map the status into the existing editable availability adjustment. Do not treat the lookup as an official inactive feed.
+
+The **Calculate stat-specific opponent factor from imported logs** button uses the player's imported game-by-game stats for the selected market against the selected opponent. It requires at least two direct matchup games, shrinks the observed difference toward the player's overall average, and caps the adjustment at +/-15%. This is a player-vs-opponent historical split, not a pure opponent defensive rating, and is particularly noisy with small samples. The importer supports `opponent` or `opponent_team` columns; if the selected CSV lacks opponent data, this adjustment will not be available.
+
+## Netlify environment variables
+- `PROP_LINE_API_KEY` (optional, live player props)
+- `ODDS_API_KEY` (optional, live game odds)
+- `GRIDIRON_DATA_API_KEY` (optional, provider-reported injury status and opponent context)
