@@ -149,3 +149,20 @@ The v15 release briefly allowed shared sportsbook-line CSV uploads. In v16, that
 - Published historical stats are loaded automatically for every visitor. Publishing one dataset preserves the other. The upload token is never embedded in website source.
 - The sportsbook CSV importer remains local to the current browser session and does not save lines to shared storage. Existing live odds and player-prop API functions remain in place.
 - Deploy by replacing the website files in the connected GitHub repository and committing the changes. In Netlify, keep `SURJ_CSV_UPLOAD_TOKEN` plus any existing API environment variables, then trigger a fresh deploy.
+
+
+## v17: Stealth Titanium + high-readability refresh
+- Updates the visual palette to Stealth Titanium: background `#111417`, panels `#252B30`, primary accent `#D5DCE3`, secondary accent `#FF5252`.
+- Increases base text size, panel headings, table text and header sizes, input/button size, row height, stat-card size, and section spacing for improved readability on desktop and mobile.
+- Retains sticky navigation, collapsible cards, ranked Best Props Finder and Moneyline Intelligence panels, and responsive tables.
+- Preserves shared persistent player stats and snap-count storage through `netlify/functions/shared-csv.mjs`; sportsbook lines remain local and are not published to shared storage.
+- Retains all existing Netlify functions and environment-variable names.
+
+### Deploy v17
+1. Download and extract the v17 ZIP.
+2. Replace the matching files in the GitHub repository connected to your existing Netlify site. Keep the included `netlify/functions/` directory, `templates/` directory, `netlify.toml`, and `package.json`.
+3. Commit the changes and wait for Netlify to finish deploying.
+4. Keep `SURJ_CSV_UPLOAD_TOKEN` and any existing `ODDS_API_KEY`, `PROP_LINE_API_KEY`, and `GRIDIRON_DATA_API_KEY` values in Netlify environment variables. Never put these secrets into the website source.
+5. Open the site, hard-refresh, and check table readability, sticky navigation, collapse buttons, CSV imports, shared player-stat loading, Moneyline Intelligence, and Best Props Finder. Live feed success still depends on provider plan coverage and valid API credentials.
+
+The package is syntax-checked, but has not been deployed to or browser-tested against the live Netlify site.
