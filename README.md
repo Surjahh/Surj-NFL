@@ -70,3 +70,12 @@ The **Calculate stat-specific opponent factor from imported logs** button uses t
 - `PROP_LINE_API_KEY` (optional, live player props)
 - `ODDS_API_KEY` (optional, live game odds)
 - `GRIDIRON_DATA_API_KEY` (optional, provider-reported injury status and opponent context)
+
+## v8: automatic team defense by prop market
+The new `netlify/functions/defense-matchups.mjs` endpoint attempts to retrieve the public nflverse team-game CSV for the selected season, then aggregates opponent offensive production allowed by defense. It computes allowed-per-game against the league average and returns a market-specific descriptive factor, capped at +/-15%. No additional API key or paid plan is required for this function.
+
+In the dashboard, open **Automatic team defense by prop market**, choose the opponent, season and market, click **Load team defense**, review the sample size and baseline, then click **Apply adjustment to projection**. The factor is copied into the existing opponent adjustment field and the evidence notes. Click **Build projection from imported stats** again to recalculate the mean with that factor applied.
+
+Supported public team-game proxies include passing yards, rushing yards, pass completions/receptions, passing touchdowns, rushing touchdowns, and combined rush + pass yards. Receiving yards are approximated with team passing yards allowed; this does not distinguish WR/TE/RB or account for target share. Some team-stat releases may omit a requested field or may not yet be published for the current season. If so, the endpoint reports the missing asset/field instead of inventing a rating. Public data is cached for up to six hours per warm function instance, and the response includes source, sample size, league average, ranking, and methodology.
+
+**Model caution:** this is an early-season descriptive factor, not a validated predictive model. The +/-15% cap is a safety bound, not a learned coefficient. Don't interpret a high allowed average as proof a player will beat a line. Evaluate the feature in rolling out-of-sample backtests before relying on it. No new API key is required; existing `PROP_LINE_API_KEY`, `ODDS_API_KEY`, and `GRIDIRON_DATA_API_KEY` settings remain unchanged.
