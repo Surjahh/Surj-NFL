@@ -1,3 +1,4 @@
+import { getStore } from "@netlify/blobs";
 export default async (request, context) => {
   const key = Netlify.env.get("ODDS_API_KEY");
   if (!key) {
@@ -34,10 +35,14 @@ export default async (request, context) => {
         markets: (b.markets || []).filter(m => ["h2h", "spreads", "totals"].includes(m.key))
       }))
     }));
+    const retrievedAt = new Date().toISOString();
+    // Market data is isolated in its own store, never in shared player-stat/snap-count storage.
+    try { await getStore("surj-intel-market-data").setJSON("game-odds-latest", { retrieved_at: retrievedAt, source: "The Odds API", games }); }
+    catch (storageError) { console.error("Market snapshot storage unavailable:", storageError); }
     return new Response(JSON.stringify({
       games,
       source: "The Odds API",
-      retrieved_at: new Date().toISOString(),
+      retrieved_at: retrievedAt,
       remaining_requests: response.headers.get("x-requests-remaining"),
       note: "Free-tier access varies. This function requests game moneylines only to maximize compatibility."
     }), { status: 200, headers: { "content-type": "application/json", "cache-control": "public, max-age=60" } });

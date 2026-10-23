@@ -1,3 +1,4 @@
+import { getStore } from "@netlify/blobs";
 export default async () => {
   const key = Netlify.env.get("PROP_LINE_API_KEY");
   if (!key) {
@@ -63,11 +64,15 @@ export default async () => {
       player_longest_completion:"Longest completion", player_reception_longest:"Longest reception"
     };
     for (const p of props) p.market = marketNames[p.market] || p.market;
+    const retrievedAt = new Date().toISOString();
+    // Player-prop market snapshots are stored separately from shared player statistics.
+    try { await getStore("surj-intel-market-data").setJSON("player-props-latest", { retrieved_at: retrievedAt, source: "PropLine", props }); }
+    catch (storageError) { console.error("Market snapshot storage unavailable:", storageError); }
     return new Response(JSON.stringify({
       props,
       events_count: events.length,
       source: "PropLine",
-      retrieved_at: new Date().toISOString(),
+      retrieved_at: retrievedAt,
       remaining_requests: response.headers.get("x-daily-remaining"),
       note: "Free tier advertises 1,000 requests/day. NFL player-prop coverage varies by sportsbook and market; a successful API response can contain no NFL props."
     }), { status: 200, headers: { "content-type": "application/json", "cache-control": "public, max-age=60" } });

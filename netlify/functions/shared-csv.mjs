@@ -23,7 +23,8 @@ export default async (request) => {
       return response(200, {
         playerStatsCsv: typeof saved.playerStatsCsv === "string" ? saved.playerStatsCsv : "",
         snapCountsCsv: typeof saved.snapCountsCsv === "string" ? saved.snapCountsCsv : "",
-        updatedAt: saved.updatedAt || null
+        updatedAt: saved.updatedAt || null,
+        autoSync: saved.autoSync || null
       });
     }
 
@@ -47,7 +48,8 @@ export default async (request) => {
     const next = {
       playerStatsCsv: typeof saved.playerStatsCsv === "string" ? saved.playerStatsCsv : "",
       snapCountsCsv: typeof saved.snapCountsCsv === "string" ? saved.snapCountsCsv : "",
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      autoSync: saved.autoSync || null
     };
     if (kind === "playerStats") next.playerStatsCsv = csv;
     if (kind === "snapCounts") next.snapCountsCsv = csv;
