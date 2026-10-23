@@ -28,6 +28,33 @@ function csvEscape(value) {
   const s = String(value ?? "");
   return /[",\r\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
+
+function preserveUnavailableSeasons(freshCsv, savedCsv, fetchedSeasons) {
+  if (!savedCsv || typeof savedCsv !== "string") return freshCsv;
+  const fresh = parseCsv(freshCsv), saved = parseCsv(savedCsv);
+  if (fresh.length < 2 || saved.length < 2) return freshCsv;
+  const freshHeaders = fresh[0].map(h => String(h).trim().toLowerCase());
+  const savedHeaders = saved[0].map(h => String(h).trim().toLowerCase());
+  const freshSeason = freshHeaders.indexOf("season"), savedSeason = savedHeaders.indexOf("season");
+  if (freshSeason < 0 || savedSeason < 0) return freshCsv;
+  const fetched = new Set(fetchedSeasons.map(Number));
+  const headers = [...new Set([...freshHeaders, ...savedHeaders])];
+  const mapRow = (row, sourceHeaders) => headers.map(h => {
+    const i = sourceHeaders.indexOf(h);
+    return i >= 0 ? (row[i] ?? "") : "";
+  });
+  const out = [headers, ...fresh.slice(1).map(r => mapRow(r, freshHeaders))];
+  for (const row of saved.slice(1)) {
+    const season = Number(row[savedSeason]);
+    if (Number.isFinite(season) && !fetched.has(season)) out.push(mapRow(row, savedHeaders));
+  }
+  const csv = out.map(row => row.map(csvEscape).join(",")).join("\n");
+  if (new TextEncoder().encode(csv).byteLength > MAX_TEXT_BYTES) {
+    throw new Error("Merged dataset exceeds storage safety limit; retaining the previously saved dataset.");
+  }
+  return csv;
+}
+
 function compactCsv(text, kind) {
   const rows = parseCsv(text);
   if (rows.length < 2) throw new Error(`${kind}: empty CSV`);
@@ -72,7 +99,10 @@ async function collect(kind) {
   }
   const csv = rows.map(row => row.map(csvEscape).join(",")).join("\n");
   if (new TextEncoder().encode(csv).byteLength > MAX_TEXT_BYTES) throw new Error(`${kind}: compacted CSV exceeds ${MAX_TEXT_BYTES} bytes`);
-  return { csv, seasons: good.map(x => x.season), rows: rows.length - 1 };
+  const failures = downloads.flatMap((x, i) => x.status === "rejected"
+    ? [{ season: SEASONS[i], message: String(x.reason?.message || x.reason) }]
+    : []);
+  return { csv, seasons: good.map(x => x.season), rows: rows.length - 1, failures };
 }
 
 export default async () => {
@@ -91,9 +121,11 @@ export default async () => {
     const outcome = syncResults[i];
     if (outcome.status === "fulfilled") {
       const data = outcome.value;
-      if (kind === "playerStats") next.playerStatsCsv = data.csv;
-      else next.snapCountsCsv = data.csv;
-      result.updated.push({ kind, seasons: data.seasons, rows: data.rows });
+      if (kind === "playerStats") next.playerStatsCsv = preserveUnavailableSeasons(data.csv, next.playerStatsCsv, data.seasons);
+      else next.snapCountsCsv = preserveUnavailableSeasons(data.csv, next.snapCountsCsv, data.seasons);
+      data.rows = Math.max(0, parseCsv(kind === "playerStats" ? next.playerStatsCsv : next.snapCountsCsv).length - 1);
+      result.updated.push({ kind, seasons: data.seasons, retainedUnavailableSeasons: data.failures.map(x => x.season), rows: data.rows });
+      for (const failure of data.failures) result.errors.push({ kind, season: failure.season, message: failure.message, retainedPreviousSeasonData: true });
     } else {
       result.errors.push({ kind, message: String(outcome.reason?.message || outcome.reason) });
       console.error("nflverse sync failed", kind, outcome.reason);

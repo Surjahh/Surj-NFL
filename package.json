@@ -1,8 +1,8 @@
 {
   "name": "surj-intel",
   "private": true,
-  "version": "18.3.0",
-  "description": "SURJ INTEL adaptive NFL player projection dashboard with postgame grading and weekly probability calibration",
+  "version": "18.3.1",
+  "description": "SURJ INTEL adaptive NFL player projection dashboard with live market tools, postgame grading, and weekly probability calibration",
   "engines": {
     "node": ">=18"
   },
